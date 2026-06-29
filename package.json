@@ -1,0 +1,31 @@
+{
+  "name": "script-app",
+  "version": "1.0.0",
+  "description": "Entorno de programación visual basado en bloques",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --windows"
+  },
+  "keywords": [],
+  "author": "Switchy2014",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.switchy2014.script",
+    "productName": "Script",
+    "electronVersion": "30.0.0",
+    "win": {
+      "icon": "build/icon.ico",
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
