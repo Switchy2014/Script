@@ -1,4 +1,3 @@
-// runtime.js - Control operacional de la Consola Virtual
 const terminal = document.getElementById('virtual-terminal');
 
 const miTerminal = {
@@ -19,6 +18,6 @@ const miTerminal = {
         p.textContent = texto;
         p.style.color = color;
         terminal.appendChild(p);
-        terminal.scrollTop = terminal.scrollHeight; // Auto-scroll hacia abajo
+        terminal.scrollTop = terminal.scrollHeight;
     }
 };
