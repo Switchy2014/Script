@@ -1,10 +1,7 @@
-// settings.js - Gestión de interfaz y variables de configuración
 const modal = document.getElementById('settings-modal');
 
-// Guardamos una copia de la función original de reproducir sonido de Blockly
 const funcionSonidoOriginal = Blockly.WorkspaceAudio.prototype.play;
 
-// Creamos un tema oscuro personalizado compatible con el renderizador Zelos
 const temaOscuroZelos = Blockly.Theme.defineTheme('zelos_dark', {
     'base': Blockly.Themes.Classic,
     'categoryStyles': {
@@ -15,9 +12,9 @@ const temaOscuroZelos = Blockly.Theme.defineTheme('zelos_dark', {
     },
     'blockStyles': {},
     'componentStyles': {
-        'workspaceBackgroundColour': '#1a1a1a', // Fondo del espacio de bloques oscuro
-        'toolboxBackgroundColour': '#2d2d2d',   // Fondo del menú lateral oscuro
-        'toolboxTextColour': '#ffffff'          // Texto del menú en blanco
+        'workspaceBackgroundColour': '#1a1a1a', 
+        'toolboxBackgroundColour': '#2d2d2d',   
+        'toolboxTextColour': '#ffffff'          
     }
 });
 
@@ -32,14 +29,13 @@ const ConfigManager = {
         const temaSeleccionado = document.getElementById('setting-theme').value;
         const sonidosActivos = document.getElementById('setting-sounds').checked;
 
-        // 1. SOLUCIÓN COLORES: Aplicar el tema adecuado según la selección
+       
         if (temaSeleccionado === 'dark') {
             workspace.setTheme(temaOscuroZelos);
         } else {
             workspace.setTheme(Blockly.Themes.Classic);
         }
 
-        // 2. Control de efectos de sonido
         if (sonidosActivos) {
             Blockly.WorkspaceAudio.prototype.play = funcionSonidoOriginal;
         } else {
