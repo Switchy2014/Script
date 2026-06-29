@@ -1,4 +1,3 @@
-// app.js - Director de eventos y ejecución principal del entorno
 document.getElementById('btn-limpiar').addEventListener('click', () => {
     miTerminal.clear();
 });
