@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script! - Editor</title>
+    <link rel="stylesheet" href="editor.css">
+    
+    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+</head>
+<body>
+
+    <div class="app-container">
+        <div id="blocklyDiv"></div>
+
+        <div class="right-panel">
+            
+            <div class="panel-section console-section">
+                <div class="panel-header">
+                    <span>Console</span>
+                    <div>
+                        <button id="btn-config" class="btn-secondary">⚙ Settings</button>
+                        <button id="btn-ejecutar" class="btn-primary">▶ Start!</button>
+                        <button id="btn-limpiar" class="btn-danger">🗑 Stop</button>
+                    </div>
+                </div>
+                <div id="virtual-terminal" class="terminal"></div>
+            </div>
+
+            <div class="panel-section code-section">
+                <div class="panel-header">Generated JavaScript</div>
+                <pre><code id="js-code-output">// Drag blocks to generate code!</code></pre>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="settings-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Editor Settings</h3>
+            
+            <div class="setting-item">
+                <label for="setting-theme">Theme</label>
+                <select id="setting-theme">
+                    <option value="classic">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <label>
+                    <input type="checkbox" id="setting-sounds" checked> 
+                    Sound Effects when dragging blocks
+                </label>
+            </div>
+
+            <button id="btn-guardar-config">Run and Close</button>
+        </div>
+    </div>
+
+    <xml id="toolbox" style="display: none">
+        <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+            <block type="controls_if"></block>
+            <block type="logic_compare"></block>
+            <block type="controls_switch"></block> </category>
+        </category>
+        <category name="Loops" colour="%{BKY_LOOPS_HUE}">
+            <block type="controls_repeat_ext">
+                <value name="TIMES">
+                    <shadow type="math_number">
+                        <field name="NUM">10</field>
+                    </shadow>
+                </value>
+            </block>
+        </category>
+        <category name="Math" colour="%{BKY_MATH_HUE}">
+            <block type="math_number"></block>
+            <block type="math_arithmetic"></block>
+        </category>
+        <category name="Text" colour="%{BKY_TEXTS_HUE}">
+            <block type="text"></block>
+        </category>
+        <category name="Console" colour= "#ff6d2e">
+            <label text="Logs"></label>
+            <block type="text_print"></block>
+            <block type="text_warn"></block>
+            <block type="text_error"></block>
+        </category>
+        <category name="Variables" colour="#A25A80" custom="VARIABLE"></category>
+        <category name="Functions" colour="#9453A3" custom="PROCEDURE"></category>
+    </xml>
+
+    <script src="runtime.js"></script>
+    <script src="blocks.js"></script>
+    <script src="settings.js"></script>
+    <script src="editor.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
