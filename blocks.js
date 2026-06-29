@@ -40,31 +40,25 @@ Blockly.Blocks['text_error'] = {
   }
 };
 
-// === PASO 2: TU GENERADOR DE CÓDIGO (Ya corregido) ===
 javascript.javascriptGenerator.forBlock['text_error'] = function (block, generator) {
     const msg = generator.valueToCode(block, 'TEXT', generator.ORDER_NONE) || "''";
     return `miTerminal.error(${msg});\n`;
 };
-// ========================================================
-// 1. LAS PIEZAS INTERNAS DEL ENGRANAJE (Se mueven en la mini-ventana)
-// ========================================================
-
-// El contenedor principal de la mini-ventana (el molde del switch)
 Blockly.Blocks['switch_container'] = {
   init: function() {
     this.appendDummyInput().appendField("Switch");
-    this.appendStatementInput("STACK"); // Aquí se enganchan los 'case' adentro
+    this.appendStatementInput("STACK"); 
     this.setColour("#537FA5");
-    this.contextMenu = false; // Esconde este bloque del menú normal
+    this.contextMenu = false; 
   }
 };
 
-// La pieza individual "caso" que el usuario arrastra dentro de la mini-ventana
+
 Blockly.Blocks['switch_case'] = {
   init: function() {
     this.appendDummyInput().appendField("Case");
-    this.setPreviousStatement(true, null); // Se conecta arriba
-    this.setNextStatement(true, null);     // Se conecta abajo
+    this.setPreviousStatement(true, null); 
+    this.setNextStatement(true, null);     
     this.setColour("#537FA5");
     this.contextMenu = false;
   }
@@ -73,16 +67,11 @@ Blockly.Blocks['switch_case'] = {
 Blockly.Blocks['switch_default'] = {
   init: function() {
     this.appendDummyInput().appendField("Default");
-    this.setPreviousStatement(true, null); // Se conecta arriba (después de los casos)
-    // No lleva setNextStatement porque SIEMPRE debe ser el último bloque
+    this.setPreviousStatement(true, null);
     this.setColour("#537FA5");
     this.contextMenu = false;
   }
 };
-
-// ========================================================
-// 2. EL BLOQUE PRINCIPAL (El que va en el lienzo real)
-// ========================================================
 Blockly.Blocks['controls_switch'] = {
   init: function() {
     this.appendValueInput("SWITCH_VAR")
@@ -94,20 +83,19 @@ Blockly.Blocks['controls_switch'] = {
     this.setColour("#537FA5")
 
     this.caseCount_ = 1;
-    this.hasDefault_ = 0; // ◀ Nueva variable: 0 si no hay default, 1 si lo hay
+    this.hasDefault_ = 0; 
     
-    // CORRECCIÓN: Ahora el mutador acepta AMBOS tipos de bloques hermanos
+    
     this.setMutator(new Blockly.icons.MutatorIcon(['switch_case', 'switch_default'], this));
   },
-
-  // ABRE LA MINI-VENTANA: Reconstruye el engranaje con los casos y el default guardados
+    
   decompose: function(workspace) {
     const containerBlock = workspace.newBlock('switch_container');
     containerBlock.initSvg?.();
     
     let connection = containerBlock.getInput('STACK').connection;
     
-    // Coloca los casos que ya existían
+    
     for (let i = 1; i <= this.caseCount_; i++) {
       const caseBlock = workspace.newBlock('switch_case');
       caseBlock.initSvg?.();
@@ -115,7 +103,6 @@ Blockly.Blocks['controls_switch'] = {
       connection = caseBlock.nextConnection;
     }
     
-    // Si tenía un default guardado, lo añade al final de la fila
     if (this.hasDefault_) {
       const defaultBlock = workspace.newBlock('switch_default');
       defaultBlock.initSvg?.();
@@ -125,7 +112,7 @@ Blockly.Blocks['controls_switch'] = {
     return containerBlock;
   },
 
-  // REACCIONA AL ENGRANAJE: Cuenta cuántos casos y si hay un default en la mini-ventana
+  
   compose: function(containerBlock) {
     let clauseBlock = containerBlock.getInputTargetBlock('STACK');
     let cases = 0;
@@ -140,7 +127,7 @@ Blockly.Blocks['controls_switch'] = {
       clauseBlock = clauseBlock.getNextBlock();
     }
     
-    // Si algo cambió en la estructura, redibujamos
+   
     if (cases !== this.caseCount_ || hasDefault !== this.hasDefault_) {
       this.caseCount_ = cases;
       this.hasDefault_ = hasDefault;
@@ -148,9 +135,9 @@ Blockly.Blocks['controls_switch'] = {
     }
   },
 
-  // REDIBUJA EL BLOQUE EN EL LIENZO REAL
+  
   updateShape_: function() {
-    // 1. Limpieza total de bocas dinámicas anteriores (casos y default)
+    
     let i = 1;
     while (this.getInput('CASE' + i)) {
       this.removeInput('CASE' + i);
@@ -161,27 +148,25 @@ Blockly.Blocks['controls_switch'] = {
       this.removeInput('DEFAULT');
     }
 
-    // 2. Inyectar los casos actuales
+    
     for (i = 1; i <= this.caseCount_; i++) {
       this.appendValueInput('CASE' + i).setCheck(null).appendField("Case");
       this.appendStatementInput('DO' + i).appendField("do");
     }
     
-    // 3. Si hasDefault_ es 1, inyectar la boca del default abajo del todo
+   
     if (this.hasDefault_) {
       this.appendStatementInput('DEFAULT').appendField("Default");
     }
   },
 
-  // GUARDAR EN EL CONFIG
+  
   mutationToDom: function() {
     const container = Blockly.utils.xml.createElement('mutation');
     container.setAttribute('cases', this.caseCount_);
     container.setAttribute('default', this.hasDefault_); // Guardamos el estado del default
     return container;
   },
-
-  // CARGAR DEL CONFIG
   domToMutation: function(xmlElement) {
     this.caseCount_ = parseInt(xmlElement.getAttribute('cases'), 10) || 0;
     this.hasDefault_ = parseInt(xmlElement.getAttribute('default'), 10) || 0;
@@ -192,7 +177,6 @@ javascript.javascriptGenerator.forBlock['controls_switch'] = function(block, gen
     const switchVar = generator.valueToCode(block, 'SWITCH_VAR', generator.ORDER_NONE) || "''";
     let code = `switch (${switchVar}) {\n`;
 
-    // 1. Escribir todos los casos dinámicos
     for (let i = 1; i <= block.caseCount_; i++) {
         const caseValue = generator.valueToCode(block, 'CASE' + i, generator.ORDER_NONE) || "''";
         const caseStatements = generator.statementToCode(block, 'DO' + i);
@@ -202,7 +186,6 @@ javascript.javascriptGenerator.forBlock['controls_switch'] = function(block, gen
         code += `    break;\n`;
     }
 
-    // 2. Si el bloque mutó y tiene la pieza default, añadirla al final del string
     if (block.hasDefault_) {
         const defaultStatements = generator.statementToCode(block, 'DEFAULT');
         code += `  default:\n`;
