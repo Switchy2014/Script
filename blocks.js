@@ -195,3 +195,271 @@ javascript.javascriptGenerator.forBlock['controls_switch'] = function(block, gen
     code += `}\n`;
     return code;
 };
+Blockly.Blocks['create_array'] = {
+  init: function() {
+
+    this.appendDummyInput()
+      .appendField("Create array named")
+      .appendField(new Blockly.FieldTextInput("myArray"), "NAME")
+      .appendField("with items");
+
+    this.appendStatementInput("ITEMS");
+
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+
+    this.setColour("#ffce2e");
+  }
+};
+
+Blockly.Blocks['array_item'] = {
+  init: function() {
+
+    this.appendValueInput("VALUE")
+      .appendField("Add item");
+
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+
+    this.setColour("#ffce2e");
+  }
+};
+
+javascript.javascriptGenerator.forBlock['create_array'] = function(block, generator) {
+
+    const name = block.getFieldValue("NAME");
+
+    let values = [];
+
+    let child = block.getInputTargetBlock("ITEMS");
+
+    while (child) {
+
+        const value =
+            generator.valueToCode(child, "VALUE", generator.ORDER_NONE) || "null";
+
+        values.push(value);
+
+        child = child.getNextBlock();
+    }
+
+    const code =
+`let ${name} = [
+    ${values.join(",\n    ")}
+];\n`;
+
+    return code;
+};
+
+javascript.javascriptGenerator.forBlock['array_item'] = function(block, generator) {
+    return "";
+};
+
+Blockly.Blocks['array_get'] = {
+  init: function() {
+
+    this.appendValueInput("INDEX")
+      .setCheck("Number")
+      .appendField("get item");
+
+    this.appendValueInput("ARRAY")
+      .appendField("from");
+
+    this.setInputsInline(true);
+    this.setOutput(true, null);
+
+     this.setColour("#ffce2e");   
+  }
+};
+
+javascript.javascriptGenerator.forBlock['array_get'] = function(block, generator) {
+
+    const index = generator.valueToCode(block, 'INDEX', generator.ORDER_NONE) || 0 + 1;
+    const array = generator.valueToCode(block, 'ARRAY', generator.ORDER_NONE) || [];
+
+    return [`${array}[${index}]`, generator.ORDER_ATOMIC];
+};
+
+Blockly.Blocks['var_name'] = {
+  init: function() {
+
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldTextInput("x"), "NAME");
+
+    this.setOutput(true, null); // 👈 reporter
+
+    this.setColour("#ffce2e");
+  }
+};
+
+javascript.javascriptGenerator.forBlock['var_name'] = function(block) {
+
+    const name = block.getFieldValue("NAME");
+
+    return [name, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.Blocks['lenght'] = {
+  init: function() {
+
+    this.appendValueInput("TEXT")
+      .appendField("length of");
+
+    this.setOutput(true, "Number");
+    this.setColour("#4FA385");
+  }
+};
+
+javascript.javascriptGenerator.forBlock['lenght'] = function(block, generator) {
+
+    const text = generator.valueToCode(block, 'TEXT', generator.ORDER_NONE);
+
+    return [`${text}.length`, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.Blocks['create_object'] = {
+  init: function() {
+
+    this.appendDummyInput()
+      .appendField("Create object named")
+      .appendField(new Blockly.FieldTextInput("myObject"), "NAME")
+      .appendField("with items");
+
+    this.appendStatementInput("ITEMS");
+
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+
+    this.setColour("#f0c93e");
+  }
+};
+javascript.javascriptGenerator.forBlock["create_object"] = function(block, generator) {
+    const name = block.getFieldValue("NAME");
+
+    let values = [];
+
+    let child = block.getInputTargetBlock("ITEMS");
+
+    while (child) {
+
+        const key =
+            generator.valueToCode(child, "KEY", 0) || '"key"';
+
+        const value =
+            generator.valueToCode(child, "VALUE", 0) || "null";
+
+        values.push(`${key} : ${value}`);
+
+        child = child.getNextBlock();
+    }
+
+    const code =
+`let ${name} = {
+    ${values.join(",\n    ")}
+}
+`;
+
+    return code; // 👈 SOLO STRING
+};
+
+Blockly.Blocks['object_item'] = {
+  init: function() {
+
+    this.appendValueInput("KEY")
+      .setCheck("String")
+      .appendField("key:");
+
+    this.appendValueInput("VALUE")
+      .appendField("value:");
+
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+
+    this.setColour("#f0c93e");
+    this.setInputsInline(true);
+  }
+};
+
+javascript.javascriptGenerator.forBlock['object_item'] = function(block, generator) {
+
+  const key = generator.valueToCode(block, 'KEY', 0) || '"key"';
+  const value = generator.valueToCode(block, 'VALUE', 0) || 'null';
+
+  return `${key} : ${value}\n`;
+};
+
+Blockly.Blocks['get_key'] = {
+  init: function() {
+
+    this.appendDummyInput()
+        .appendField("get key");
+
+    this.appendValueInput("NUMBER")
+        .setCheck("Number") 
+        .appendField("number");
+
+    this.appendValueInput("NAME")
+        .appendField("from object");
+
+    this.setOutput(true, null);
+    this.setColour("#f0c93e");
+    this.setInputsInline(true);
+  }
+};
+
+javascript.javascriptGenerator.forBlock['get_key'] = function(block) {
+  let position = Blockly.JavaScript.valueToCode(block, 'NUMBER', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  
+  let objName = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || '{}';
+
+  position = position.trim();
+  if (position.startsWith('(') && position.endsWith(')')) {
+    position = position.substring(1, position.length - 1);
+  }
+
+  objName = objName.trim();
+  if (objName.startsWith('(') && objName.endsWith(')')) {
+    objName = objName.substring(1, objName.length - 1);
+  }
+
+let code = `Object.keys(${objName})[${position}]`;
+
+return [code, Blockly.JavaScript.ORDER_MEMBER_ACCESS];
+};
+
+Blockly.Blocks['get_value'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("get value");
+
+    this.appendValueInput("NUMBER")
+        .setCheck("Number") 
+        .appendField("number");
+
+    this.appendValueInput("NAME")
+        .appendField("from object");
+
+    this.setOutput(true, null);
+    this.setColour("#f0c93e");
+    this.setInputsInline(true); 
+  }
+};
+javascript.javascriptGenerator.forBlock['get_value'] = function(block) {
+  let position = Blockly.JavaScript.valueToCode(block, 'NUMBER', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+  
+  let objName = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC) || '{}';
+
+  position = position.trim();
+  if (position.startsWith('(') && position.endsWith(')')) {
+    position = position.substring(1, position.length - 1);
+  }
+
+  objName = objName.trim();
+  if (objName.startsWith('(') && objName.endsWith(')')) {
+    objName = objName.substring(1, objName.length - 1);
+  }
+
+  let code = `${objName}[Object.keys(${objName})[${position}]]`;
+
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+}
